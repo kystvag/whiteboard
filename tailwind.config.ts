@@ -11,8 +11,19 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#1E3A8A", // Eksempel farge for primære handlinger
+        secondary: "#FBBF24", // Eksempel farge for sekundære handlinger
+        accent: "#10B981", // Eksempel aksentfarge
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"], // Standard sans-serif font
+        serif: ["Merriweather", "serif"], // Standard serif font
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
 } satisfies Config;
