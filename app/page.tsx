@@ -8,15 +8,17 @@ interface User {
   email: string;
 }
 
+interface Circuit {
+  circuitName: string;
+  locality: string;
+}
+
 interface Race {
   round: string;
   raceName: string;
   date: string;
   time: string;
-  circuit: {
-    circuitName: string;
-    locality: string;
-  };
+  Circuit: Circuit;
 }
 
 const HomePage = () => {
@@ -44,14 +46,14 @@ const HomePage = () => {
         const response = await fetch("https://ergast.com/api/f1/2025.json");
         const data = await response.json();
 
-        const raceData = (data.MRData?.RaceTable?.Races || []).map((race: any) => ({
-          round: race.round || "",
-          raceName: race.raceName || "Ukjent løp",
-          date: race.date || "Ukjent dato",
-          time: race.time || "Ukjent tid",
-          circuit: {
+        const raceData: Race[] = (data.MRData?.RaceTable?.Races || []).map((race: Race) => ({
+          round: race.round,
+          raceName: race.raceName,
+          date: race.date,
+          time: race.time,
+          Circuit: {
             circuitName: race.Circuit?.circuitName || "Ukjent bane",
-            locality: race.Circuit?.Location?.locality || "Ukjent sted",
+            locality: race.Circuit?.locality || "Ukjent sted",
           },
         }));
 
@@ -85,7 +87,7 @@ const HomePage = () => {
             {races.length > 0 ? (
               races.map((race, index) => (
                 <li key={index}>
-                  {race.round}. {race.raceName} – {race.circuit.locality} ({race.date})
+                  {race.round}. {race.raceName} – {race.Circuit.locality} ({race.date})
                 </li>
               ))
             ) : (
@@ -104,7 +106,7 @@ const HomePage = () => {
                 {nextRace.date} kl. {nextRace.time}
               </p>
               <p className="text-sm">
-                Bane: {nextRace.circuit.circuitName} ({nextRace.circuit.locality})
+                Bane: {nextRace.Circuit.circuitName} ({nextRace.Circuit.locality})
               </p>
             </div>
           ) : (
