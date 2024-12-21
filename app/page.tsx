@@ -1,142 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/utils/supabaseClient";
-
-interface User {
-  id: string;
-  email: string;
-}
-
-interface Race {
-  id: number;
-  runde: number;
-  navn: string;
-  dato: string;
-  tidspunkt: string;
-  bane: string;
-  lokalitet: string;
-}
+import React from "react";
 
 const HomePage = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [races, setRaces] = useState<Race[]>([]);
-  const [nextRace, setNextRace] = useState<Race | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) {
-        setUser({
-          id: session.user.id,
-          email: session.user.email || "Ingen e-post funnet",
-        });
-      } else {
-        setUser(null);
-      }
-    };
-
-    const fetchRaces = async () => {
-      try {
-        const { data: racesData, error } = await supabase
-          .from("f1_lop")
-          .select("*")
-          .order("runde", { ascending: true });
-
-        if (error) {
-          console.error("Feil ved henting av løpsdata fra Supabase:", error);
-          return;
-        }
-
-        setRaces(racesData || []);
-
-        const now = new Date();
-        const next = racesData?.find(
-          (race: Race) => new Date(race.dato) > now
-        );
-        setNextRace(next || null);
-      } catch (error) {
-        console.error("Feil ved henting av løpsdata:", error);
-      }
-    };
-
-    fetchUser();
-    fetchRaces();
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-  };
+  const races = [
+    { round: "1", raceName: "Melbourne", date: "16. mars kl. 16:00", locality: "Australia" },
+    { round: "2", raceName: "Jeddah", date: "30. mars kl. 15:00", locality: "Saudi Arabia" },
+    { round: "3", raceName: "Suzuka", date: "6. april kl. 14:00", locality: "Japan" },
+    { round: "4", raceName: "Shanghai", date: "20. april kl. 16:00", locality: "Kina" },
+    { round: "5", raceName: "Miami", date: "4. mai kl. 15:00", locality: "USA" },
+    { round: "6", raceName: "Imola", date: "18. mai kl. 15:00", locality: "Italia" },
+    { round: "7", raceName: "Monaco", date: "25. mai kl. 15:00", locality: "Monaco" },
+    { round: "8", raceName: "Montreal", date: "8. juni kl. 14:00", locality: "Canada" },
+    { round: "9", raceName: "Barcelona", date: "22. juni kl. 15:00", locality: "Spania" },
+    { round: "10", raceName: "Silverstone", date: "6. juli kl. 15:00", locality: "Storbritannia" },
+    { round: "11", raceName: "Budapest", date: "20. juli kl. 15:00", locality: "Ungarn" },
+    { round: "12", raceName: "Spa", date: "3. august kl. 15:00", locality: "Belgia" },
+    { round: "13", raceName: "Zandvoort", date: "24. august kl. 15:00", locality: "Nederland" },
+    { round: "14", raceName: "Monza", date: "7. september kl. 15:00", locality: "Italia" },
+    { round: "15", raceName: "Singapore", date: "21. september kl. 15:00", locality: "Singapore" },
+    { round: "16", raceName: "Suzuka", date: "5. oktober kl. 14:00", locality: "Japan" },
+    { round: "17", raceName: "Austin", date: "19. oktober kl. 15:00", locality: "USA" },
+    { round: "18", raceName: "Mexico City", date: "2. november kl. 15:00", locality: "Mexico" },
+    { round: "19", raceName: "São Paulo", date: "16. november kl. 15:00", locality: "Brasil" },
+    { round: "20", raceName: "Las Vegas", date: "30. november kl. 15:00", locality: "USA" },
+    { round: "21", raceName: "Abu Dhabi", date: "7. desember kl. 15:00", locality: "UAE" },
+  ];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {/* Top section */}
-      <div className="flex justify-between p-4 bg-white shadow">
-        {/* F1-løp liste */}
-        <div className="w-1/2">
-          <h2 className="text-lg font-bold">F1-løp 2025</h2>
+      {/* Header */}
+      <header className="bg-blue-500 text-white p-4 text-center">
+        <h1 className="text-2xl font-bold">Hugos Infotavle</h1>
+      </header>
+
+      {/* Innhold */}
+      <div className="flex flex-grow p-4 gap-4">
+        {/* F1-løpene */}
+        <div className="w-1/2 bg-white shadow p-4 overflow-y-auto">
+          <h2 className="text-xl font-bold mb-4">F1-løp 2025</h2>
           <ul className="list-disc pl-4">
-            {races.length > 0 ? (
-              races.map((race) => (
-                <li key={race.id}>
-                  {race.runde}. {race.navn} – {race.lokalitet} ({race.dato})
-                </li>
-              ))
-            ) : (
-              <li>Ingen løp funnet.</li>
-            )}
+            {races.map((race) => (
+              <li key={race.round}>
+                {race.round}. {race.raceName} – {race.locality} ({race.date})
+              </li>
+            ))}
           </ul>
         </div>
 
-        {/* Neste løp */}
-        <div className="w-1/2 text-right">
-          <h2 className="text-lg font-bold">Neste løp</h2>
-          {nextRace ? (
-            <div>
-              <p className="text-sm font-semibold">{nextRace.navn}</p>
-              <p className="text-sm">
-                {nextRace.dato} kl. {nextRace.tidspunkt}
-              </p>
-              <p className="text-sm">
-                Bane: {nextRace.bane} ({nextRace.lokalitet})
-              </p>
-            </div>
-          ) : (
-            <p>Ingen kommende løp funnet.</p>
-          )}
+        {/* Meteogram-widget */}
+        <div className="w-1/2 bg-white shadow p-4">
+          <h2 className="text-xl font-bold mb-4">Værmelding</h2>
+          <iframe
+            src="https://www.yr.no/en/content/1-90090/meteogram.svg?mode=dark"
+            className="w-full"
+            style={{ height: "500px", border: "none" }}
+            title="Meteogram"
+          />
         </div>
       </div>
 
-      {/* Mid-section */}
-      <div className="flex flex-col items-center justify-center flex-grow">
-        <h1 className="text-3xl font-bold mb-4">Velkommen til Whiteboard</h1>
-        {user ? (
-          <div className="text-center">
-            <p className="mb-4">
-              Du er logget inn som <span className="font-semibold">{user.email}</span>
-            </p>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
-              Logg ut
-            </button>
-          </div>
-        ) : (
-          <div className="text-center">
-            <p className="mb-4">Ingen bruker er logget inn.</p>
-            <a
-              href="/login"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-block"
-            >
-              Logg inn
-            </a>
-          </div>
-        )}
-      </div>
+      {/* Footer */}
+      <footer className="bg-gray-200 text-center p-4 mt-auto">
+        <p>Du er logget inn som Hugo</p>
+        <button className="bg-red-500 text-white px-4 py-2 rounded mt-2">Logg ut</button>
+      </footer>
     </div>
   );
 };
