@@ -44,14 +44,14 @@ const HomePage = () => {
         const response = await fetch("https://ergast.com/api/f1/2025.json");
         const data = await response.json();
 
-        const raceData = data.MRData.RaceTable.Races.map((race: any) => ({
-          round: race.round,
-          raceName: race.raceName,
-          date: race.date,
-          time: race.time,
+        const raceData = (data.MRData?.RaceTable?.Races || []).map((race: any) => ({
+          round: race.round || "",
+          raceName: race.raceName || "Ukjent løp",
+          date: race.date || "Ukjent dato",
+          time: race.time || "Ukjent tid",
           circuit: {
-            circuitName: race.Circuit.circuitName,
-            locality: race.Circuit.Location.locality,
+            circuitName: race.Circuit?.circuitName || "Ukjent bane",
+            locality: race.Circuit?.Location?.locality || "Ukjent sted",
           },
         }));
 
@@ -82,11 +82,15 @@ const HomePage = () => {
         <div className="w-1/2">
           <h2 className="text-lg font-bold">F1-løp 2025</h2>
           <ul className="list-disc pl-4">
-            {races.map((race) => (
-              <li key={race.round}>
-                {race.round}. {race.raceName} – {race.circuit.locality} ({race.date})
-              </li>
-            ))}
+            {races.length > 0 ? (
+              races.map((race, index) => (
+                <li key={index}>
+                  {race.round}. {race.raceName} – {race.circuit.locality} ({race.date})
+                </li>
+              ))
+            ) : (
+              <li>Ingen løp funnet.</li>
+            )}
           </ul>
         </div>
 
