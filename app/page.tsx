@@ -8,17 +8,14 @@ interface User {
   email: string;
 }
 
-interface Circuit {
-  circuitName: string;
-  locality: string;
-}
-
 interface Race {
-  round: string;
-  raceName: string;
-  date: string;
-  time: string;
-  Circuit: Circuit;
+  id: number;
+  runde: number;
+  navn: string;
+  dato: string;
+  tidspunkt: string;
+  bane: string;
+  lokalitet: string;
 }
 
 const HomePage = () => {
@@ -43,24 +40,22 @@ const HomePage = () => {
 
     const fetchRaces = async () => {
       try {
-        const response = await fetch("https://ergast.com/api/f1/2025.json");
-        const data = await response.json();
+        const { data: racesData, error } = await supabase
+          .from("f1_lop")
+          .select("*")
+          .order("runde", { ascending: true });
 
-        const raceData: Race[] = (data.MRData?.RaceTable?.Races || []).map((race: Race) => ({
-          round: race.round,
-          raceName: race.raceName,
-          date: race.date,
-          time: race.time,
-          Circuit: {
-            circuitName: race.Circuit?.circuitName || "Ukjent bane",
-            locality: race.Circuit?.locality || "Ukjent sted",
-          },
-        }));
+        if (error) {
+          console.error("Feil ved henting av løpsdata fra Supabase:", error);
+          return;
+        }
 
-        setRaces(raceData);
+        setRaces(racesData || []);
 
         const now = new Date();
-        const next = raceData.find((race: Race) => new Date(race.date) > now);
+        const next = racesData?.find(
+          (race: Race) => new Date(race.dato) > now
+        );
         setNextRace(next || null);
       } catch (error) {
         console.error("Feil ved henting av løpsdata:", error);
@@ -85,9 +80,9 @@ const HomePage = () => {
           <h2 className="text-lg font-bold">F1-løp 2025</h2>
           <ul className="list-disc pl-4">
             {races.length > 0 ? (
-              races.map((race, index) => (
-                <li key={index}>
-                  {race.round}. {race.raceName} – {race.Circuit.locality} ({race.date})
+              races.map((race) => (
+                <li key={race.id}>
+                  {race.runde}. {race.navn} – {race.lokalitet} ({race.dato})
                 </li>
               ))
             ) : (
@@ -101,12 +96,12 @@ const HomePage = () => {
           <h2 className="text-lg font-bold">Neste løp</h2>
           {nextRace ? (
             <div>
-              <p className="text-sm font-semibold">{nextRace.raceName}</p>
+              <p className="text-sm font-semibold">{nextRace.navn}</p>
               <p className="text-sm">
-                {nextRace.date} kl. {nextRace.time}
+                {nextRace.dato} kl. {nextRace.tidspunkt}
               </p>
               <p className="text-sm">
-                Bane: {nextRace.Circuit.circuitName} ({nextRace.Circuit.locality})
+                Bane: {nextRace.bane} ({nextRace.lokalitet})
               </p>
             </div>
           ) : (
