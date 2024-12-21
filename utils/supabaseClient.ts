@@ -1,16 +1,14 @@
-console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-console.log("Supabase Anon Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-
-
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "supabaseUrl eller supabaseAnonKey mangler. Kontroller at .env.local inneholder riktig informasjon."
-  );
+  console.error("Supabase URL or Anon Key is missing.");
+  throw new Error("supabaseUrl or supabaseAnonKey is undefined.");
 }
+
+console.log("Supabase URL:", supabaseUrl);
+console.log("Supabase Anon Key:", supabaseAnonKey);
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
