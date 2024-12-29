@@ -1,14 +1,13 @@
 "use client";
 
-import React from "react";
-
-const A2Page = () => {
+export default function A2Page() {
   return (
-    <div className="bg-white shadow p-4 min-h-full">
-      <h1 className="text-xl font-bold mb-4">Værmelding</h1>
-      <p>Her kommer værdata for utvalgte steder.</p>
+    <div className="p-6 bg-gray-900 text-white min-h-screen flex items-center justify-center">
+      <img
+        src="https://www.yr.no/en/content/1-2776491/meteogram.svg?mode=dark"
+        alt="Meteogram fra YR"
+        className="w-full max-w-xl h-auto"
+      />
     </div>
   );
-};
-
-export default A2Page;
+}
