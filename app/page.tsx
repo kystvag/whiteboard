@@ -6,43 +6,55 @@ const HomePage = () => {
       {/* Section A1 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="A1">
         <iframe
-          src="https://yr.no/some-widget"
-          className="w-full h-64 md:h-80 border-none rounded-md"
-          title="Yr Widget"
+          src="/A1"
+          className="w-full h-full border-none rounded-md"
+          title="A1 Content"
         ></iframe>
       </div>
 
       {/* Section A2 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="A2">
         <iframe
-          src="https://yr.no/some-widget"
-          className="w-full h-64 md:h-80 border-none rounded-md"
-          title="Yr Widget"
+          src="/A2"
+          className="w-full h-full border-none rounded-md"
+          title="A2 Content"
         ></iframe>
       </div>
 
       {/* Section A3 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="A3">
         <iframe
-          src="https://yr.no/some-widget"
-          className="w-full h-64 md:h-80 border-none rounded-md"
-          title="Yr Widget"
+          src="/A3"
+          className="w-full h-full border-none rounded-md"
+          title="A3 Content"
         ></iframe>
       </div>
 
       {/* Section B1 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="B1">
-        <p className="text-center text-gray-200">Innhold for seksjon B1</p>
+        <iframe
+          src="/B1"
+          className="w-full h-full border-none rounded-md"
+          title="B1 Content"
+        ></iframe>
       </div>
 
       {/* Section B2 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="B2">
-        <p className="text-center text-gray-200">Innhold for seksjon B2</p>
+        <iframe
+          src="/B2"
+          className="w-full h-full border-none rounded-md"
+          title="B2 Content"
+        ></iframe>
       </div>
 
       {/* Section B3 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 flex items-center justify-center" id="B3">
-        <p className="text-center text-gray-200">Innhold for seksjon B3</p>
+        <iframe
+          src="/B3"
+          className="w-full h-full border-none rounded-md"
+          title="B3 Content"
+        ></iframe>
       </div>
     </div>
   );
