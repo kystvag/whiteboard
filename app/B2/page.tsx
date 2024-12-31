@@ -32,8 +32,35 @@ function getWeatherIcon(symbolCode?: string) {
   return iconMap[symbolCode || ""] || "❓";
 }
 
+// Definer typen for værdata
+interface WeatherData {
+  properties: {
+    timeseries: {
+      time: string;
+      data: {
+        instant: {
+          details: {
+            wind_speed: number;
+            wind_speed_of_gust: number;
+            wind_from_direction: number;
+            air_temperature: number;
+          };
+        };
+        next_1_hours?: {
+          summary?: {
+            symbol_code: string;
+          };
+          details?: {
+            precipitation_amount: number;
+          };
+        };
+      };
+    }[];
+  };
+}
+
 export default function B2Page() {
-  const [weatherData, setWeatherData] = useState<any>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -50,7 +77,7 @@ export default function B2Page() {
         if (!response.ok) {
           throw new Error("Feil ved henting av værdata.");
         }
-        const data = await response.json();
+        const data: WeatherData = await response.json();
         setWeatherData(data);
       } catch (err) {
         setError("Kunne ikke hente værdata. Prøv igjen senere.");
@@ -81,7 +108,7 @@ export default function B2Page() {
               </tr>
             </thead>
             <tbody>
-              {weatherData.properties.timeseries.slice(0, 24).map((item: any, index: number) => {
+              {weatherData.properties.timeseries.slice(0, 24).map((item, index) => {
                 const windSpeed = item.data.instant.details.wind_speed || "N/A";
                 const windGust = item.data.instant.details.wind_speed_of_gust || "N/A";
                 const windDirection = item.data.instant.details.wind_from_direction || "N/A";
