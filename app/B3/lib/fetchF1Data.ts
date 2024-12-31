@@ -1,6 +1,14 @@
+
 import axios from 'axios';
 
 const BASE_URL = 'https://ergast.com/api/f1';
+
+// Define a type for the Race object
+interface Race {
+  date: string;
+  raceName: string;
+  [key: string]: any; // Add additional properties if needed
+}
 
 // Henter 2025 kalender
 export const getSeasonCalendar = async (year: number) => {
@@ -17,7 +25,7 @@ export const getLastWeekendResults = async () => {
 // Tider for kommende helg
 export const getNextWeekendDetails = async () => {
   const response = await axios.get(`${BASE_URL}/current.json`);
-  const races = response.data.MRData.RaceTable.Races;
-  const upcomingRace = races.find((race: any) => new Date(race.date) > new Date());
+  const races: Race[] = response.data.MRData.RaceTable.Races;
+  const upcomingRace = races.find((race) => new Date(race.date) > new Date());
   return upcomingRace || null;
 };

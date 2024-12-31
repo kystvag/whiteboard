@@ -34,12 +34,6 @@ export default function Page() {
     <div className="bg-gray-100 p-4 min-h-screen">
       <h1 className="text-3xl font-bold text-center mb-4">F1 Kalender 2025</h1>
       <div className="grid grid-cols-2 gap-4 max-w-4xl mx-auto">
-        <div className="col-span-1 text-right font-bold text-sm bg-blue-200 p-2">
-          2024 Winners
-        </div>
-        <div className="col-span-1 text-right font-bold text-sm bg-blue-200 p-2">
-          2024 Winners
-        </div>
         {raceData.map((race) => (
           <div key={race.round} className="bg-white rounded shadow p-2 flex items-center justify-between">
             <div className="flex items-center">

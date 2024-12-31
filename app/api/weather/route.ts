@@ -16,8 +16,18 @@ export async function GET() {
       }
     );
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    console.error("Feil ved henting av værdata fra server:", error.message);
-    return NextResponse.json({ error: "Kunne ikke hente værdata" }, { status: 500 });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("Feil ved henting av værdata fra server:", error.message);
+      return NextResponse.json(
+        { error: "Kunne ikke hente værdata" },
+        { status: 500 }
+      );
+    }
+    console.error("Ukjent feil ved henting av værdata:", error);
+    return NextResponse.json(
+      { error: "En ukjent feil oppstod" },
+      { status: 500 }
+    );
   }
 }
