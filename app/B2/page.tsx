@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 
 // Funksjon for å bestemme pilretning basert på vindretning (Yr-stil)
-function getWindDirectionArrow(direction: number) {
+function getWindDirectionArrow(direction: number | "N/A") {
+  if (direction === "N/A") return "N/A";
   if (direction >= 337.5 || direction < 22.5) return "↑"; // Nord
   if (direction >= 22.5 && direction < 67.5) return "↗"; // Nordøst
   if (direction >= 67.5 && direction < 112.5) return "→"; // Øst
@@ -15,24 +16,7 @@ function getWindDirectionArrow(direction: number) {
   return "N/A";
 }
 
-// Funksjon for å hente værikoner basert på symbol_code
-function getWeatherIcon(symbolCode?: string) {
-  const iconMap: Record<string, string> = {
-    cloudy: "☁️",
-    fair: "🌤️",
-    heavyrain: "🌧️",
-    lightsnow: "❄️",
-    partlycloudy_day: "⛅",
-    partlycloudy_night: "🌙",
-    sleet: "🌨️",
-    snow: "❄️",
-    rain: "🌧️",
-    thunderstorm: "⛈️",
-  };
-  return iconMap[symbolCode || ""] || "❓";
-}
-
-// Definer typen for værdata
+// Resten av koden for værdata
 interface WeatherData {
   properties: {
     timeseries: {
@@ -109,9 +93,9 @@ export default function B2Page() {
             </thead>
             <tbody>
               {weatherData.properties.timeseries.slice(0, 24).map((item, index) => {
-                const windSpeed = item.data.instant.details.wind_speed || "N/A";
-                const windGust = item.data.instant.details.wind_speed_of_gust || "N/A";
-                const windDirection = item.data.instant.details.wind_from_direction || "N/A";
+                const windSpeed = item.data.instant.details.wind_speed ?? "N/A";
+                const windGust = item.data.instant.details.wind_speed_of_gust ?? "N/A";
+                const windDirection = item.data.instant.details.wind_from_direction ?? "N/A";
 
                 return (
                   <tr key={index}>
@@ -122,16 +106,16 @@ export default function B2Page() {
                       })}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
-                      {getWeatherIcon(item.data.next_1_hours?.summary?.symbol_code)}
+                      {item.data.next_1_hours?.summary?.symbol_code ?? "N/A"}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
-                      {item.data.instant.details.air_temperature || "N/A"}
+                      {item.data.instant.details.air_temperature ?? "N/A"}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
                       {windSpeed} ({windGust}) {getWindDirectionArrow(windDirection)}
                     </td>
                     <td className="border border-gray-300 px-4 py-2 text-center">
-                      {item.data.next_1_hours?.details?.precipitation_amount || "N/A"}
+                      {item.data.next_1_hours?.details?.precipitation_amount ?? "N/A"}
                     </td>
                   </tr>
                 );
